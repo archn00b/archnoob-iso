@@ -1,5 +1,5 @@
 #!/usr/bin/env bash 
-#set -e
+set -e
 ##################################################################################################################
 # Author 	: ArchN00B
 # Website   : https://www.github.com/ArchN00B
@@ -19,7 +19,7 @@
 ####################################################################################################################################################
 
 # printing to the screen using color
-printf "%s\033[34mCHECKING FOR UPDATED FILES ONE REPO\033[m\n"
+printf "\033[34mCHECKING FOR UPDATED FILES ONE REPO\033[m\n"
 
 # Checking for updated files on repo
 git pull
@@ -32,17 +32,18 @@ sleep 2
 git status
 
 # Printing to the screen with color
-printf "%s\033[34mADDING EDITED FILES TO REPO MAKE YOUR COMMIT\033[m\n"
+printf "\033[34mADDING EDITED FILES TO REPO MAKE YOUR COMMIT\033[m\n"
 
 
 # Read user input very important to add commit or it failed to add edited files to repo
-read input
+
+read -r -p "Enter your commit:" input
 
 # Adding the commit to repo
-git commit -m "$input"
+ git commit -m "$input"
 
 # Printing color to the screen 
-printf "%s\033[34mFINISHING UP ALMOST DONE\033[m\n"
+printf "\033[34mFINISHING UP ALMOST DONE\033[m\n"
 
 # Pushing edited files to master repo
 git push -u origin master

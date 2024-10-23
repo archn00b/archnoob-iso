@@ -110,13 +110,40 @@ add_user() {
     fi
 }
 
+# Text formatting
+bold=$(tput setaf 2 bold)
+bolderror=$(tput setaf 3 bold)
+normal=$(tput sgr0)
 
+# Function to add ArchN00B core-repo to /etc/pacman.conf
+add_repo() {
+    printf "%s\n" "${bold}Adding [core-repo] to $Profile_Dir/pacman.conf...${normal}"
+
+    if ! grep -qxF "[core-repo]" "$Profile_Dir"/pacman.conf; then
+        {
+            echo ""
+            echo "[core-repo]"
+            echo "SigLevel = Optional TrustAll"
+            echo "Server = https://archn00b.github.io/\$repo/\$arch"
+        } | sudo tee -a "$Profile_Dir"/pacman.conf
+    fi
+}
+
+add_bashrc() {
+    # Adding custom .bashrc to /etc/skel 
+    cp -r .bashrc ${Rootfs_Dir}/etc/skel/
+    # shellcheck source=.bashrc
+    # shellcheck disable=SC1091
+    source "${Rootfs_Dir}/etc/skel/.bashrc"
+}
 
 # Create the ISO
 make_iso() {
     rm -rf "${Build_Dir:?}/"*  # Delete all contents in the work directory
     mkarchiso -v -w "$Build_Dir" -o "$ISO_Dir" "$Profile_Dir"
 }
+
+
 
 # Main function to orchestrate the steps
 main() {
@@ -126,6 +153,8 @@ main() {
     add_packages
     setup_sddm
     add_user
+    add_repo || { echo "${bolderror}Error adding ArchN00B repo to $Profile_Dir/etc/pacman.conf.${normal}"; exit 1; }
+    add_bashrc
     make_iso
 }
 

@@ -1,0 +1,8 @@
+
+# Custom Packages
+xorg
+xfce4
+xfce4-goodies
+sddm
+alacritty
+firefox

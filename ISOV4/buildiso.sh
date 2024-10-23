@@ -110,7 +110,24 @@ add_user() {
     fi
 }
 
+# Text formatting
+bold=$(tput setaf 2 bold)
+bolderror=$(tput setaf 3 bold)
+normal=$(tput sgr0)
 
+# Function to add ArchN00B core-repo to /etc/pacman.conf
+add_repo() {
+    printf "%s\n" "${bold}Adding [core-repo] to $Profile_Dir/pacman.conf...${normal}"
+
+    if ! grep -qxF "[core-repo]" "$Profile_Dir"/pacman.conf; then
+        {
+            echo ""
+            echo "[core-repo]"
+            echo "SigLevel = Optional TrustAll"
+            echo "Server = https://archn00b.github.io/\$repo/\$arch"
+        } | sudo tee -a "$Profile_Dir"/pacman.conf
+    fi
+}
 
 # Create the ISO
 make_iso() {
@@ -126,6 +143,7 @@ main() {
     add_packages
     setup_sddm
     add_user
+    add_repo || { echo "${bolderror}Error adding ArchN00B repo to $Profile_Dir/etc/pacman.conf.${normal}"; exit 1; }
     make_iso
 }
 

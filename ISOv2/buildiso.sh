@@ -36,7 +36,7 @@ export ROOT_UID=0     # Only users with $UID 0 have root privileges.
 export E_NOTROOT=87   # Non-root exit error.
 export Profile_Dir="/tmp/archlive"
 export Rootfs_Dir="${Profile_Dir}/airootfs"
-export Config_Dir="${Rootfs_Dir}/etc/skell/.config"
+export Config_Dir="${Rootfs_Dir}/etc/skel/.config"
 export Build_Dir="${Profile_Dir}/work"
 ISO_Dir="$(basename "$0"/iso)"
 export archiso_dir="/usr/share/archiso/configs/releng"
@@ -101,8 +101,13 @@ setup_directories() {
     check_and_create_dir "$Build_Dir"
     check_and_create_dir "$ISO_Dir"
 }
-# Adding packages to packages.x86_64
-source addpkg.sh
+
+# Add packages from a file to the package list
+add_packages() {
+    while IFS= read -r pkg; do
+        echo "$pkg" >> "${Profile_Dir}/packages.x86_64"
+    done < "$add_pkg_file"
+}
 
 # Deleting all contents in work direcrory executing mkarchiso
 make_iso() {

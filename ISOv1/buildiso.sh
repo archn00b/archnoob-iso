@@ -36,7 +36,7 @@ ROOT_UID=0     # Only users with $UID 0 have root privileges.
 E_NOTROOT=87   # Non-root exit error.
 Profile_Dir="/tmp/archlive"
 Rootfs_Dir="${Profile_Dir}/airootfs"
-Config_Dir="${Rootfs_Dir}/etc/skell/.config"
+Config_Dir="${Rootfs_Dir}/etc/skel/.config"
 Build_Dir="${Profile_Dir}/work"
 ISO_Dir=$(basename "$0"/iso)
 archiso_dir="/usr/share/archiso/configs/releng"
@@ -89,6 +89,7 @@ check_and_create_dir() {
         mkdir -p "$dir"
     else
         echo "Directory $dir already exists."
+        rm -rf "$dir"
     fi
 }
 

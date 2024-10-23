@@ -1,4 +1,4 @@
-# Script for building custom archlinux iso Profile hasnt been edited.
+# Script for building custom archlinux iso 
 
 
 

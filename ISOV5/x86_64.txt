@@ -1,0 +1,14 @@
+
+# Added Packages
+xorg
+xfce4
+xfce4-goodies
+sddm
+alacritty
+firefox
+starship
+lsd
+
+# Custom repo Packages
+archnoob-alacritty
+archnoob-starship
