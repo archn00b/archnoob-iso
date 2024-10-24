@@ -30,15 +30,15 @@ check_root() {
 }
 
 # Check if a package is installed
-pkg_is_installed() {
+check_archiso() {
     pacman -Qi "$1" &> /dev/null
 }
 
 # Install packages
-install_packages() {
-    echo "Adding packages..." | tee -a "$logfile"
+install_archiso() {
+    echo "Adding ArchIso" | tee -a "$logfile"
     for pkg in "${packages[@]}"; do
-        if pkg_is_installed "$pkg"; then
+        if check_archiso "$pkg"; then
             echo "$pkg is already installed." | tee -a "$logfile"
         else
             echo "Adding $pkg..." | tee -a "$logfile"
@@ -49,11 +49,11 @@ install_packages() {
             fi
         fi
     done
-    cp -vr "$archiso_dir/"* "$Profile_Dir" >> "$logfile"
+    cp -vr "$archiso_dir/"* "$Profile_Dir" | tee -a "$logfile"
 }
 
 # Create directories if they do not exist
-check_and_create_dir() {
+check_directories() {
     local dir="$1"
     if [ ! -d "$dir" ]; then
         echo "Directory $dir does not exist. Creating it..."
@@ -64,10 +64,10 @@ check_and_create_dir() {
 }
 
 # Setup all necessary directories
-setup_directories() {
+make_directories() {
     echo "Creating directories..."
     for dir in "$Profile_Dir" "$Rootfs_Dir" "$Config_Dir" "$Build_Dir" "$ISO_Dir"; do
-        check_and_create_dir "$dir"
+        check_directories "$dir"
     done
 }
 
@@ -91,14 +91,14 @@ add_user() {
     local target_dir="${Rootfs_Dir}/etc/"
     
     # Array of directories/files to copy
-    local items=(liveuser/* sudoers.d pam.d profiledef.sh)
+    local directories=(liveuser/* sudoers.d pam.d profiledef.sh)
 
     # Copy each item to the target directory
-    for item in "${items[@]}"; do
-        if [[ -e $item ]]; then
-            cp -r "$item" "$target_dir"
+    for dir in "${directories[@]}"; do
+        if [[ -e $dir ]]; then
+            cp -r "$dir" "$target_dir"
         else
-            echo "Warning: $item does not exist."
+            echo "Warning: $dir does not exist."
         fi
     done
     
@@ -110,8 +110,6 @@ add_user() {
     fi
 }
 
-
-
 # Create the ISO
 make_iso() {
     rm -rf "${Build_Dir:?}/"*  # Delete all contents in the work directory
@@ -121,8 +119,8 @@ make_iso() {
 # Main function to orchestrate the steps
 main() {
     check_root
-    setup_directories
-    install_packages
+    make_directories
+    install_archiso
     add_packages
     setup_sddm
     add_user
